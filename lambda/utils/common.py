@@ -28,22 +28,18 @@ url = "https://customer.neobingostyle.com/orders"
 #---------------------------------------------
 # 暗号化をデコード
 #---------------------------------------------
-def decrypt_secret(key, encryption_context=None):
+
+def decrypt_secret(key):
     from base64 import b64decode
     ENCRYPTED = os.environ[key]
-
-    if encryption_context is None:
-        encryption_context = {'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
-    elif isinstance(encryption_context, str):
-        encryption_context = {encryption_context: os.environ.get(encryption_context, '')}
-
+    # Decrypt code should run once and variables stored outside of the function
+    # handler so that these are decrypted once per container
     DECRYPTED = boto3.client('kms').decrypt(
         CiphertextBlob=b64decode(ENCRYPTED),
-        EncryptionContext=encryption_context
+        EncryptionContext={'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
     )['Plaintext'].decode('utf-8')
 
     return DECRYPTED
-
 
 
 

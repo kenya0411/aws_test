@@ -92,10 +92,8 @@ def headless_chrome():
 
 
 def get_driver():
-    ENV = decrypt_secret('ENV', 'LOCAL')
+    ENV = decrypt_secret('ENV')
     print(ENV)
-    test = decrypt_secret('ENV')
-    print(test)
 
 
     if ENV == 'PROD':  # AWS環境
