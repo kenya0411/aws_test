@@ -19,24 +19,23 @@ def lambda_handler(event, context):
     driver = get_driver()
     bucket_name = 'selenium-work-python'
 
-    login_metabusiness(driver,bucket_name)
+    # login_metabusiness(driver,bucket_name)
 
-    driver.get(URL)
-    process_screenshot(driver, bucket_name, "1")
+    # driver.get(URL)
+    # process_screenshot(driver, bucket_name, "1")
 
 
-    # search_box = browser.find_element_by_name('p')
-    search_box = driver.find_element(By.NAME, 'p')
-    search_box.send_keys('こんにちは')
-    search_box.send_keys(Keys.RETURN)
-    time.sleep(2)
+    # # search_box = browser.find_element_by_name('p')
+    # search_box = driver.find_element(By.NAME, 'p')
+    # search_box.send_keys('こんにちは')
+    # search_box.send_keys(Keys.RETURN)
+    # time.sleep(2)
 
-    process_screenshot(driver, bucket_name, "test")
-    first_result_title = driver.find_element(By.CSS_SELECTOR, '.sw-Card__title').text
-    # first_result_title = driver.find_element_by_css_selector('.sw-Card__title').text
-    print(f"最初の検索結果のタイトル: {first_result_title}")
+    # process_screenshot(driver, bucket_name, "test")
+    # first_result_title = driver.find_element(By.CSS_SELECTOR, '.sw-Card__title').text
+    # # first_result_title = driver.find_element_by_css_selector('.sw-Card__title').text
+    # print(f"最初の検索結果のタイトル: {first_result_title}")
 
-    driver.close()
 
     return {
         'statusCode': 200,
@@ -53,7 +52,8 @@ def login_metabusiness(driver,bucket_name):
 
     try:
         process_screenshot(driver, bucket_name, "1")
-
+        SecondLoginPass = SecondLoginPass_win(decrypt_secret('base32_key'))
+        print(SecondLoginPass)
         # 要素が出てくるまで待つ
         wait = WebDriverWait(driver, 20)
         # ユーザ名とパスワードの入力フィールドを探します。
@@ -86,8 +86,15 @@ def login_metabusiness(driver,bucket_name):
 
 
         print("Finished to login metabusiness suite")
+        driver.close()
 
 
     except NoSuchElementException:
         time.sleep(1)  # ページの遷移を待つ
         print("already logined")
+
+
+def SecondLoginPass_win(base32_key):
+    oathtool_path = 'tools/oath-toolkit/oathtool.exe'
+    result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
+    return result.stdout.strip()
