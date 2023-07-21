@@ -6,66 +6,44 @@ import time
 # testsss
     
 def lambda_handler(event, context):
-    print("Starting Lambda function")
+    print("Lambda functionを開始")
     user = decrypt_secret('user')
 
     URL = "https://www.yahoo.co.jp/"
 
     options = webdriver.ChromeOptions()
-    # headless-chromiumのパスを指定
     options.binary_location = "/opt/headless/headless-chromium"
     options.add_argument("--headless")
     options.add_argument('--single-process')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument("--no-sandbox")
 
-    print("Starting Chrome")
+    print("Chromeを起動")
     browser = webdriver.Chrome(
-        # chromedriverのパスを指定
         executable_path="/opt/headless/chromedriver",
         options=options
     )
 
     browser.get(URL)
-    title = browser.title
-    print(f"Page title: {title}")
+    bucket_name = 'selenium-work-python'
+    process_screenshot(browser, bucket_name, "1")
 
-    # 検索ボックスを見つける
-    search_box = browser.find_element_by_name('p')  # Yahoo Japanの検索ボックスのname属性は'p'
-    
-    # 検索ボックスに「テスト」と入力
+
+    search_box = browser.find_element_by_name('p')
     search_box.send_keys(user)
-    
-    # 検索を実行
     search_box.send_keys(Keys.RETURN)
-    
-    # 検索結果が表示されるまで待つ
     time.sleep(2)
 
-    # 最初の検索結果のタイトルを取得
+    process_screenshot(browser, bucket_name, "test")
+
     first_result_title = browser.find_element_by_css_selector('.sw-Card__title').text
-    print(f"First result title: {first_result_title}")
+    print(f"最初の検索結果のタイトル: {first_result_title}")
 
-    screenshot_path = "/tmp/screenshot.png"
-    print(f"Saving screenshot to {screenshot_path}")
-    browser.save_screenshot(screenshot_path)
     browser.close()
-
-    # Check if screenshot was saved correctly
-    if os.path.exists(screenshot_path):
-        print("Screenshot saved successfully")
-    else:
-        print("Screenshot was not saved correctly")
-
-    # S3にアップロード
-    s3 = boto3.client('s3')
-    bucket_name = 'selenium-work-python'  # ここにあなたのS3バケット名を入力してください
-    print(f"Uploading screenshot to s3://{bucket_name}/data/screenshot/1.png")
-    s3.upload_file(screenshot_path, bucket_name, 'data/screenshot/1.png')
 
     return {
         'statusCode': 200,
-        'body': f'Screenshot saved at s3://{bucket_name}/data/screenshot/1.png'
+        'body': 'スクリーンショットの保存とアップロードが完了しました'
     }
 
 
@@ -80,3 +58,31 @@ def decrypt_secret(key):
     )['Plaintext'].decode('utf-8')
 
     return DECRYPTED
+
+
+# スクリーンショット
+def take_screenshot(browser, screenshot_name):
+    # スクリーンショットを取得し保存する関数
+    screenshot_path = f"/tmp/{screenshot_name}.png"
+    print(f"スクリーンショットを保存: {screenshot_path}")
+    browser.save_screenshot(screenshot_path)
+    if os.path.exists(screenshot_path):
+        print(f"スクリーンショット {screenshot_name} は正常に保存されました")
+        return screenshot_path
+    else:
+        print(f"スクリーンショット {screenshot_name} の保存に失敗しました")
+        return None
+
+def s3_upload(screenshot_path, bucket_name, object_name):
+    # スクリーンショットをS3にアップロードする関数
+    s3 = boto3.client('s3')
+    print(f"スクリーンショットをS3にアップロード: s3://{bucket_name}/{object_name}")
+    s3.upload_file(screenshot_path, bucket_name, object_name)
+    print(f"スクリーンショット {screenshot_path} のアップロードに成功")
+
+def process_screenshot(browser, bucket_name, screenshot_name):
+    # スクリーンショットの取得とアップロードを行う関数
+    screenshot_path = take_screenshot(browser, screenshot_name)
+    if screenshot_path:
+        object_name = f'data/screenshot/{screenshot_name}.png'
+        s3_upload(screenshot_path, bucket_name, object_name)

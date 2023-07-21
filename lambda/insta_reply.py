@@ -78,7 +78,7 @@ def login_metabusiness(driver,config):
     except NoSuchElementException:
         time.sleep(1)  # ページの遷移を待つ
         print("already logined")
-login_metabusiness(driver,config)
+# login_metabusiness(driver,config)
         
 # #---------------------------------------------
 # # メールを取得
