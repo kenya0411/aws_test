@@ -62,3 +62,19 @@ def headless_chrome(service,config):
 
 driver = headless_chrome(service,config)
 
+
+
+
+def get_driver():
+    options = webdriver.ChromeOptions()
+    options.binary_location = "/opt/headless/headless-chromium"
+    options.add_argument("--headless")
+    options.add_argument('--single-process')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument("--no-sandbox")
+    print("Chromeを起動")
+    driver = webdriver.Chrome(
+        executable_path="/opt/headless/chromedriver",
+        options=options
+    )
+    return driver
