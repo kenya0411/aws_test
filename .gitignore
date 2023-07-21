@@ -1,0 +1,4 @@
+
+lambda/config.py
+*.pyc
+lambda/data/screenshot/start.png
