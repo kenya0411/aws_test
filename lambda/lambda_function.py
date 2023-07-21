@@ -95,8 +95,14 @@ def login_metabusiness(driver,bucket_name):
         print("already logined")
 
 
-def SecondLoginPass_win(base32_key):
-    import subprocess
-    oathtool_path = 'tools/oath-toolkit/oathtool.exe'
-    result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
-    return result.stdout.strip()
+# def SecondLoginPass_win(base32_key):
+#     import subprocess
+#     oathtool_path = 'tools/oath-toolkit/oathtool.exe'
+#     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
+#     return result.stdout.strip()
+
+def SecondLoginPass(base32_key):
+    import pyotp
+    totp = pyotp.TOTP(base32_key)
+    SecondLoginPass = totp.now()  # Generates the current OTP
+    return SecondLoginPass
