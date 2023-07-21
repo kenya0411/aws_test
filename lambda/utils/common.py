@@ -20,6 +20,41 @@ from selenium.webdriver.support import expected_conditions as EC
 url = "https://customer.neobingostyle.com/orders"
 
 #---------------------------------------------
+# スクリーンショット用
+#---------------------------------------------
+def take_screenshot(browser, screenshot_name):
+    # スクリーンショットを取得し保存する関数
+    screenshot_path = f"/tmp/{screenshot_name}.png"
+    print(f"スクリーンショットを保存: {screenshot_path}")
+    browser.save_screenshot(screenshot_path)
+    if os.path.exists(screenshot_path):
+        print(f"スクリーンショット {screenshot_name} は正常に保存されました")
+        return screenshot_path
+    else:
+        print(f"スクリーンショット {screenshot_name} の保存に失敗しました")
+        return None
+
+def s3_upload(screenshot_path, bucket_name, object_name):
+    # スクリーンショットをS3にアップロードする関数
+    s3 = boto3.client('s3')
+    print(f"スクリーンショットをS3にアップロード: s3://{bucket_name}/{object_name}")
+    s3.upload_file(screenshot_path, bucket_name, object_name)
+    print(f"スクリーンショット {screenshot_path} のアップロードに成功")
+
+def process_screenshot(browser, bucket_name, screenshot_name):
+    # スクリーンショットの取得とアップロードを行う関数
+    screenshot_path = take_screenshot(browser, screenshot_name)
+    if screenshot_path:
+        object_name = f'data/screenshot/{screenshot_name}.png'
+        s3_upload(screenshot_path, bucket_name, object_name)
+
+
+
+
+
+
+
+#---------------------------------------------
 # メール情報を取得
 #---------------------------------------------
 
