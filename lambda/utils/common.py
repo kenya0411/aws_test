@@ -34,6 +34,8 @@ def decrypt_secret(key, encryption_context=None):
 
     if encryption_context is None:
         encryption_context = {'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
+    elif isinstance(encryption_context, str):
+        encryption_context = {encryption_context: os.environ.get(encryption_context, '')}
 
     DECRYPTED = boto3.client('kms').decrypt(
         CiphertextBlob=b64decode(ENCRYPTED),
@@ -41,6 +43,7 @@ def decrypt_secret(key, encryption_context=None):
     )['Plaintext'].decode('utf-8')
 
     return DECRYPTED
+
 
 
 

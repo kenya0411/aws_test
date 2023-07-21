@@ -94,6 +94,10 @@ def headless_chrome():
 def get_driver():
     ENV = decrypt_secret('ENV', 'LOCAL')
     print(ENV)
+    test = decrypt_secret('ENV')
+    print(test)
+
+
     if ENV == 'PROD':  # AWS環境
         options = webdriver.ChromeOptions()
         options.binary_location = "/opt/headless/headless-chromium"
