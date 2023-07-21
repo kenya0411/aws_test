@@ -6,7 +6,7 @@ import time
 import config
 from utils.common import *
 
-def headless_chrome(config):
+def headless_chrome():
     # 現在のスクリプトの絶対パスを取得
     current_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,9 +26,7 @@ def headless_chrome(config):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument('window-size=1200x600')
-
-    if(config.os_ver == "win"):
-        profile_directory = '/Users/user/AppData/Local/Google/Chrome/User Data/python'
+    profile_directory = '/Users/user/AppData/Local/Google/Chrome/User Data/python'
     options.add_argument(f'--user-data-dir={profile_directory}')
     driver = webdriver.Chrome(service=service, options=options)#seleniumのバージョンにより変更
     return driver
@@ -52,7 +50,7 @@ def get_driver():
             options=options
         )
     else:  # ローカル環境
-        driver = headless_chrome(config)
+        driver = headless_chrome()
     
     return driver
 
