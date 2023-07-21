@@ -10,31 +10,31 @@ from time import sleep
 
 
 # Chromeの情報
-options = Options()
-options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+# options = Options()
+# options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 
-# 現在のスクリプトの絶対パスを取得
-current_path = os.path.abspath(os.path.dirname(__file__))
+# # 現在のスクリプトの絶対パスを取得
+# current_path = os.path.abspath(os.path.dirname(__file__))
 
-# 親ディレクトリのパスを取得
-parent_path = os.path.dirname(current_path)
+# # 親ディレクトリのパスを取得
+# parent_path = os.path.dirname(current_path)
 
-# ChromeDriverの絶対パスを作成
-driver_path = os.path.join(parent_path+"/data", 'chromedriver')
-# driver_path = 'chromedriver'
-# 
-#seleniumのバージョンにより変更
-service = Service(executable_path=driver_path)
+# # ChromeDriverの絶対パスを作成
+# driver_path = os.path.join(parent_path+"/data", 'chromedriver')
+# # driver_path = 'chromedriver'
+# # 
+# #seleniumのバージョンにより変更
+# service = Service(executable_path=driver_path)
 
-try:
-    # WebDriverのインスタンスを生成
-    # driver = webdriver.Chrome(executable_path=driver_path, options=options)
-    driver = webdriver.Chrome(service=service, options=options)#seleniumのバージョンにより変更
-except Exception as e:
-    print("WebDriverエラー:", str(e))
-    # もしエラーが出た場合はwebdriver_managerでChromeDriverをインストール
+# try:
+#     # WebDriverのインスタンスを生成
+#     # driver = webdriver.Chrome(executable_path=driver_path, options=options)
+#     driver = webdriver.Chrome(service=service, options=options)#seleniumのバージョンにより変更
+# except Exception as e:
+#     print("WebDriverエラー:", str(e))
+#     # もしエラーが出た場合はwebdriver_managerでChromeDriverをインストール
     
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+#     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
 
 
