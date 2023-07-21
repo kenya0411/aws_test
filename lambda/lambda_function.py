@@ -24,7 +24,7 @@ def lambda_handler(event, context):
 
 
     search_box = browser.find_element_by_name('p')
-    search_box.send_keys(user)
+    search_box.send_keys('こんにちは')
     search_box.send_keys(Keys.RETURN)
     time.sleep(2)
 
