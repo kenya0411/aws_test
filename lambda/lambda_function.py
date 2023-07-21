@@ -3,7 +3,6 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-import config
 from utils.common import *
 
 def headless_chrome():
