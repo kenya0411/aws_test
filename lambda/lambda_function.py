@@ -5,7 +5,8 @@ from selenium.webdriver.common.by import By
 import time
 from utils.common import *
 from utils.option import *
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 
@@ -15,26 +16,27 @@ def lambda_handler(event, context):
 
     URL = "https://www.yahoo.co.jp/"
 
-    browser = get_driver()
-
-
-    browser.get(URL)
+    driver = get_driver()
     bucket_name = 'selenium-work-python'
-    process_screenshot(browser, bucket_name, "1")
+
+    login_metabusiness(driver,bucket_name)
+
+    driver.get(URL)
+    process_screenshot(driver, bucket_name, "1")
 
 
     # search_box = browser.find_element_by_name('p')
-    search_box = browser.find_element(By.NAME, 'p')
+    search_box = driver.find_element(By.NAME, 'p')
     search_box.send_keys('こんにちは')
     search_box.send_keys(Keys.RETURN)
     time.sleep(2)
 
-    process_screenshot(browser, bucket_name, "test")
-    first_result_title = browser.find_element(By.CSS_SELECTOR, '.sw-Card__title').text
-    # first_result_title = browser.find_element_by_css_selector('.sw-Card__title').text
+    process_screenshot(driver, bucket_name, "test")
+    first_result_title = driver.find_element(By.CSS_SELECTOR, '.sw-Card__title').text
+    # first_result_title = driver.find_element_by_css_selector('.sw-Card__title').text
     print(f"最初の検索結果のタイトル: {first_result_title}")
 
-    browser.close()
+    driver.close()
 
     return {
         'statusCode': 200,
@@ -43,3 +45,49 @@ def lambda_handler(event, context):
 
 
 
+def login_metabusiness(driver):
+
+    url ="https://business.facebook.com/latest/home"
+    driver.get(url)  # ここを実際のURLに置き換えてください
+    time.sleep(2)  # ページの遷移を待つ
+
+    try:
+        process_screenshot(driver, bucket_name, "1")
+
+        # 要素が出てくるまで待つ
+        wait = WebDriverWait(driver, 20)
+        # ユーザ名とパスワードの入力フィールドを探します。
+        username_field = driver.find_element(By.XPATH, '//*[@id="email"]')
+        password_field = driver.find_element(By.XPATH, '//*[@id="pass"]')
+        process_screenshot(driver, bucket_name, "2")
+
+        # 入力フィールドにユーザ名とパスワードを入力します。
+        username_field.send_keys(11)
+        password_field.send_keys(22)
+        # ここでスクリーンショットを取る
+        process_screenshot(driver, bucket_name, "3")
+
+        # パスワード入力フィールドでEnterキーを押してログインします。
+        password_field.send_keys(Keys.RETURN)
+
+        time.sleep(7)  # ページの遷移を待つ
+            # ここでスクリーンショットを取る
+        auth_field = driver.find_element(By.XPATH, '//*[@id="approvals_code"]')
+        auth_field.send_keys(config.SecondLoginPass)
+        auth_field.send_keys(Keys.RETURN)
+        driver.save_screenshot(ss_path+'3.png')
+        
+        time.sleep(3)  # ページの遷移を待つ
+        driver.save_screenshot(ss_path+'4.png')
+
+        submit_button = driver.find_element(By.XPATH, '//*[@id="checkpointSubmitButton"]')
+        submit_button.click()
+        driver.save_screenshot(ss_path+'5.png')
+
+
+        print("Finished to login metabusiness suite")
+
+
+    except NoSuchElementException:
+        time.sleep(1)  # ページの遷移を待つ
+        print("already logined")
