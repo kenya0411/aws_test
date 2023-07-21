@@ -8,33 +8,36 @@ from utils.common import *
 from time import sleep
 # import config
 
+def nomal_chrome():
+    from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service#seleniumのバージョンにより変更
+    # Chromeの情報
+    options = Options()
+    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 
-# Chromeの情報
-# options = Options()
-# options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+    # 現在のスクリプトの絶対パスを取得
+    current_path = os.path.abspath(os.path.dirname(__file__))
 
-# # 現在のスクリプトの絶対パスを取得
-# current_path = os.path.abspath(os.path.dirname(__file__))
+    # 親ディレクトリのパスを取得
+    parent_path = os.path.dirname(current_path)
 
-# # 親ディレクトリのパスを取得
-# parent_path = os.path.dirname(current_path)
+    # ChromeDriverの絶対パスを作成
+    driver_path = os.path.join(parent_path+"/data", 'chromedriver')
+    # driver_path = 'chromedriver'
+    # 
+    #seleniumのバージョンにより変更
+    service = Service(executable_path=driver_path)
 
-# # ChromeDriverの絶対パスを作成
-# driver_path = os.path.join(parent_path+"/data", 'chromedriver')
-# # driver_path = 'chromedriver'
-# # 
-# #seleniumのバージョンにより変更
-# service = Service(executable_path=driver_path)
-
-# try:
-#     # WebDriverのインスタンスを生成
-#     # driver = webdriver.Chrome(executable_path=driver_path, options=options)
-#     driver = webdriver.Chrome(service=service, options=options)#seleniumのバージョンにより変更
-# except Exception as e:
-#     print("WebDriverエラー:", str(e))
-#     # もしエラーが出た場合はwebdriver_managerでChromeDriverをインストール
-    
-#     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    try:
+        # WebDriverのインスタンスを生成
+        # driver = webdriver.Chrome(executable_path=driver_path, options=options)
+        driver = webdriver.Chrome(service=service, options=options)#seleniumのバージョンにより変更
+    except Exception as e:
+        print("WebDriverエラー:", str(e))
+        # もしエラーが出た場合はwebdriver_managerでChromeDriverをインストール
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    return driver
 
 
 
@@ -93,9 +96,6 @@ def headless_chrome():
 
 def get_driver():
     ENV = decrypt_secret('ENV')
-    print(ENV)
-
-
     if ENV == 'PROD':  # AWS環境
         options = webdriver.ChromeOptions()
         options.binary_location = "/opt/headless/headless-chromium"
@@ -109,6 +109,7 @@ def get_driver():
             options=options
         )
     else:  # ローカル環境
-        driver = headless_chrome()
+        # driver = headless_chrome()
+        driver = nomal_chrome()
     
     return driver

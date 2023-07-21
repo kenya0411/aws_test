@@ -17,7 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 import os
-import boto3
+
 
 
 url = "https://customer.neobingostyle.com/orders"
@@ -29,15 +29,38 @@ url = "https://customer.neobingostyle.com/orders"
 # 暗号化をデコード
 #---------------------------------------------
 
-def decrypt_secret(key):
+# def decrypt_secret(key):
+#     ENCRYPTED = os.environ[key]
+#     import boto3
+#     from base64 import b64decode
+#     # Decrypt code should run once and variables stored outside of the function
+#     # handler so that these are decrypted once per container
+#     DECRYPTED = boto3.client('kms').decrypt(
+#         CiphertextBlob=b64decode(ENCRYPTED),
+#         EncryptionContext={'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
+#     )['Plaintext'].decode('utf-8')
+
+#     return DECRYPTED
+
+def decrypt_secret(key, default_value=None):
     from base64 import b64decode
-    ENCRYPTED = os.environ[key]
-    # Decrypt code should run once and variables stored outside of the function
-    # handler so that these are decrypted once per container
-    DECRYPTED = boto3.client('kms').decrypt(
-        CiphertextBlob=b64decode(ENCRYPTED),
-        EncryptionContext={'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
-    )['Plaintext'].decode('utf-8')
+
+    # 環境変数からキーを指定して値を取得します。存在しなければデフォルト値を使用します。
+    ENCRYPTED = os.environ.get(key, default_value)
+
+    # 値が見つからない場合は、Noneを返します。
+    if ENCRYPTED is None:
+        return None
+    try:
+        import boto3
+
+        function_name = os.environ.get('AWS_LAMBDA_FUNCTION_NAME', 'local')
+        DECRYPTED = boto3.client('kms').decrypt(
+            CiphertextBlob=b64decode(ENCRYPTED),
+            EncryptionContext={'LambdaFunctionName': function_name}
+        )['Plaintext'].decode('utf-8')
+    except Exception:
+        DECRYPTED = None
 
     return DECRYPTED
 
@@ -59,6 +82,7 @@ def take_screenshot(browser, screenshot_name):
         return None
 
 def s3_upload(screenshot_path, bucket_name, object_name):
+    import boto3
     # スクリーンショットをS3にアップロードする関数
     s3 = boto3.client('s3')
     print(f"スクリーンショットをS3にアップロード: s3://{bucket_name}/{object_name}")
