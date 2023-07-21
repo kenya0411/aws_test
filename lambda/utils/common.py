@@ -15,7 +15,9 @@ from selenium.webdriver.support.ui import Select
 # from urllib.parse import urlparse, parse_qs#クエリ取得用
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 import os
+import boto3
 
 
 url = "https://customer.neobingostyle.com/orders"
