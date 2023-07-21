@@ -22,6 +22,28 @@ import boto3
 
 url = "https://customer.neobingostyle.com/orders"
 
+
+
+
+#---------------------------------------------
+# 暗号化をデコード
+#---------------------------------------------
+def decrypt_secret(key, encryption_context=None):
+    from base64 import b64decode
+    ENCRYPTED = os.environ[key]
+
+    if encryption_context is None:
+        encryption_context = {'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
+
+    DECRYPTED = boto3.client('kms').decrypt(
+        CiphertextBlob=b64decode(ENCRYPTED),
+        EncryptionContext=encryption_context
+    )['Plaintext'].decode('utf-8')
+
+    return DECRYPTED
+
+
+
 #---------------------------------------------
 # スクリーンショット用
 #---------------------------------------------

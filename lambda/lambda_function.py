@@ -11,7 +11,6 @@ from utils.option import *
 
 def lambda_handler(event, context):
     print("Lambda functionを開始")
-    user = decrypt_secret('user')
 
     URL = "https://www.yahoo.co.jp/"
 
@@ -41,17 +40,3 @@ def lambda_handler(event, context):
         'body': 'スクリーンショットの保存とアップロードが完了しました'
     }
 
-
-def decrypt_secret(key, encryption_context=None):
-    from base64 import b64decode
-    ENCRYPTED = os.environ[key]
-
-    if encryption_context is None:
-        encryption_context = {'LambdaFunctionName': os.environ['AWS_LAMBDA_FUNCTION_NAME']}
-
-    DECRYPTED = boto3.client('kms').decrypt(
-        CiphertextBlob=b64decode(ENCRYPTED),
-        EncryptionContext=encryption_context
-    )['Plaintext'].decode('utf-8')
-
-    return DECRYPTED
