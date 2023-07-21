@@ -45,7 +45,7 @@ def lambda_handler(event, context):
 
 
 
-def login_metabusiness(driver):
+def login_metabusiness(driver,bucket_name):
 
     url ="https://business.facebook.com/latest/home"
     driver.get(url)  # ここを実際のURLに置き換えてください
