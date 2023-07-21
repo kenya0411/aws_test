@@ -3,8 +3,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service#seleniumのバージョンにより変更
+
 from time import sleep
 # import config
 
@@ -64,6 +63,8 @@ from time import sleep
 
 
 def headless_chrome():
+    from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service#seleniumのバージョンにより変更
     # 現在のスクリプトの絶対パスを取得
     current_path = os.path.abspath(os.path.dirname(__file__))
 
