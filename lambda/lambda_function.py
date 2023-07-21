@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     driver = get_driver()
     bucket_name = 'selenium-work-python'
 
-    # login_metabusiness(driver,bucket_name)
+    login_metabusiness(driver,bucket_name)
 
     # driver.get(URL)
     # process_screenshot(driver, bucket_name, "1")
@@ -53,6 +53,7 @@ def login_metabusiness(driver,bucket_name):
     try:
         process_screenshot(driver, bucket_name, "1")
         SecondLoginPass = SecondLoginPass_win(decrypt_secret('base32_key'))
+        print(decrypt_secret('base32_key'))
         print(SecondLoginPass)
         # 要素が出てくるまで待つ
         wait = WebDriverWait(driver, 20)
