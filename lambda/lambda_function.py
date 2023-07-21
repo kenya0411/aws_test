@@ -6,6 +6,19 @@ import time
 from utils.common import *
 
 
+def get_driver():
+    options = webdriver.ChromeOptions()
+    options.binary_location = "/opt/headless/headless-chromium"
+    options.add_argument("--headless")
+    options.add_argument('--single-process')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument("--no-sandbox")
+    print("Chromeを起動")
+    browser = webdriver.Chrome(
+        executable_path="/opt/headless/chromedriver",
+        options=options
+    )
+    return browser
 
 def lambda_handler(event, context):
     print("Lambda functionを開始")
@@ -13,18 +26,9 @@ def lambda_handler(event, context):
 
     URL = "https://www.yahoo.co.jp/"
 
-    options = webdriver.ChromeOptions()
-    options.binary_location = "/opt/headless/headless-chromium"
-    options.add_argument("--headless")
-    options.add_argument('--single-process')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument("--no-sandbox")
+    browser = get_driver()
 
-    print("Chromeを起動")
-    browser = webdriver.Chrome(
-        executable_path="/opt/headless/chromedriver",
-        options=options
-    )
+
 
     browser.get(URL)
     bucket_name = 'selenium-work-python'
