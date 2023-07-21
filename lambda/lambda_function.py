@@ -52,7 +52,7 @@ def login_metabusiness(driver,bucket_name):
 
     try:
         process_screenshot(driver, bucket_name, "1")
-        SecondLoginPass = SecondLoginPass_win(decrypt_secret('base32_key'))
+        SecondLoginPass = SecondLoginPass(decrypt_secret('base32_key'))
         print(decrypt_secret('base32_key'))
         print(SecondLoginPass)
         # 要素が出てくるまで待つ
