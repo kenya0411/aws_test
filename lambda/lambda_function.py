@@ -52,7 +52,7 @@ def login_metabusiness(driver,bucket_name):
 
     try:
         process_screenshot(driver, bucket_name, "1")
-        SecondLoginPass = SecondLoginPass(decrypt_secret('base32_key'))
+        SecondLoginPass = generate_otp(decrypt_secret('base32_key'))
         print(decrypt_secret('base32_key'))
         print(SecondLoginPass)
         # 要素が出てくるまで待つ
@@ -101,7 +101,7 @@ def login_metabusiness(driver,bucket_name):
 #     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
 #     return result.stdout.strip()
 
-def SecondLoginPass(base32_key):
+def generate_otp(base32_key):
     import pyotp
     totp = pyotp.TOTP(base32_key)
     SecondLoginPass = totp.now()  # Generates the current OTP
