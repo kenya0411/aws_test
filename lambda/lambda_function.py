@@ -52,8 +52,9 @@ def login_metabusiness(driver,bucket_name):
 
     try:
         process_screenshot(driver, bucket_name, "1")
-        SecondLoginPass = generate_otp(decrypt_secret('base32_key'))
         print(decrypt_secret('base32_key'))
+        
+        SecondLoginPass = SecondLoginPass_win(decrypt_secret('base32_key'))
         print(SecondLoginPass)
         # 要素が出てくるまで待つ
         wait = WebDriverWait(driver, 20)
@@ -95,14 +96,14 @@ def login_metabusiness(driver,bucket_name):
         print("already logined")
 
 
-# def SecondLoginPass_win(base32_key):
-#     import subprocess
-#     oathtool_path = 'tools/oath-toolkit/oathtool.exe'
-#     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
-#     return result.stdout.strip()
+def SecondLoginPass_win(base32_key):
+    import subprocess
+    oathtool_path = 'tools/oath-toolkit/oathtool.exe'
+    result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
+    return result.stdout.strip()
 
-def generate_otp(base32_key):
-    import pyotp
-    totp = pyotp.TOTP(base32_key)
-    SecondLoginPass = totp.now()  # Generates the current OTP
-    return SecondLoginPass
+# def generate_otp(base32_key):
+#     import pyotp
+#     totp = pyotp.TOTP(base32_key)
+#     SecondLoginPass = totp.now()  # Generates the current OTP
+#     return SecondLoginPass
