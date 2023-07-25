@@ -98,7 +98,8 @@ def login_metabusiness(driver,bucket_name):
 
 def SecondLoginPass_win(base32_key):
     import subprocess
-    oathtool_path = 'tools/oath-toolkit/oathtool.exe'
+    # oathtool_path = 'tools/oath-toolkit/oathtool.exe'
+    oathtool_path = '/opt/oathtool/oathtool'
     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
     return result.stdout.strip()
 
