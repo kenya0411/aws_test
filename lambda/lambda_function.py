@@ -65,7 +65,7 @@ def login_metabusiness(driver,bucket_name):
         username_field = driver.find_element(By.XPATH, '//*[@id="email"]')
         password_field = driver.find_element(By.XPATH, '//*[@id="pass"]')
         process_screenshot(driver, bucket_name, "2")
-
+        print(decrypt_secret('face_id'))
         # 入力フィールドにユーザ名とパスワードを入力します。
         username_field.send_keys(decrypt_secret('face_id'))
         password_field.send_keys(decrypt_secret('face_pass'))
