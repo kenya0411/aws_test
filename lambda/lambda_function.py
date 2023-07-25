@@ -104,6 +104,7 @@ def SecondLoginPass_win(base32_key):
     # oathtool_path = 'tools/oath-toolkit/oathtool.exe'
     oathtool_path = '/opt/usr/local/bin/oathtool'
     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
+    print("stderr:", result.stderr)  # エラーメッセージを表示
     return result.stdout.strip()
 
 # def generate_otp(base32_key):
