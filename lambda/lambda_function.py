@@ -103,6 +103,11 @@ def SecondLoginPass_win(base32_key):
     import subprocess
     # oathtool_path = 'tools/oath-toolkit/oathtool.exe'
     oathtool_path = '/opt/oathtool-package/oathtool'
+    lib_path = '/opt/oathtool-package'
+    
+    # Set the library path
+    os.environ['LD_LIBRARY_PATH'] = lib_path
+
     result = subprocess.run([oathtool_path, '--totp', '--base32', base32_key], capture_output=True, text=True)
     print("stderr:", result.stderr)  # エラーメッセージを表示
     return result.stdout.strip()
