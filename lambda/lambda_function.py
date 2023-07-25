@@ -67,8 +67,8 @@ def login_metabusiness(driver,bucket_name):
         process_screenshot(driver, bucket_name, "2")
 
         # 入力フィールドにユーザ名とパスワードを入力します。
-        username_field.send_keys(11)
-        password_field.send_keys(22)
+        username_field.send_keys(decrypt_secret('face_id'))
+        password_field.send_keys(decrypt_secret('face_pass'))
         # ここでスクリーンショットを取る
         process_screenshot(driver, bucket_name, "3")
 
@@ -78,16 +78,16 @@ def login_metabusiness(driver,bucket_name):
         time.sleep(7)  # ページの遷移を待つ
             # ここでスクリーンショットを取る
         auth_field = driver.find_element(By.XPATH, '//*[@id="approvals_code"]')
-        auth_field.send_keys(config.SecondLoginPass)
+        auth_field.send_keys(SecondLoginPass)
         auth_field.send_keys(Keys.RETURN)
-        driver.save_screenshot(ss_path+'3.png')
+        process_screenshot(driver, bucket_name, "4")
         
         time.sleep(3)  # ページの遷移を待つ
-        driver.save_screenshot(ss_path+'4.png')
+        process_screenshot(driver, bucket_name, "5")
 
         submit_button = driver.find_element(By.XPATH, '//*[@id="checkpointSubmitButton"]')
         submit_button.click()
-        driver.save_screenshot(ss_path+'5.png')
+        process_screenshot(driver, bucket_name, "6")
 
 
         print("Finished to login metabusiness suite")
