@@ -53,9 +53,12 @@ def login_metabusiness(driver,bucket_name):
     try:
         process_screenshot(driver, bucket_name, "1")
         print(decrypt_secret('base32_key'))
+        print('SecondLoginPass----start')
         
         SecondLoginPass = SecondLoginPass_win(decrypt_secret('base32_key'))
         print(SecondLoginPass)
+        print('SecondLoginPass----end')
+
         # 要素が出てくるまで待つ
         wait = WebDriverWait(driver, 20)
         # ユーザ名とパスワードの入力フィールドを探します。
